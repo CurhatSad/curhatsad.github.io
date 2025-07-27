@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Notifikasi Web (SW)</title>
+  <title>Notifikasi Web (Aman)</title>
   <style>
     body { font-family: Arial; text-align: center; margin-top: 50px; }
     button {
@@ -24,39 +24,27 @@
   <button onclick="kirimNotifikasi()">Kirim Notifikasi</button>
 
   <script>
-    // Buat isi service worker langsung di sini
-    const swCode = `
-      self.addEventListener('install', event => {
-        console.log('SW installed');
-      });
-      self.addEventListener('activate', event => {
-        console.log('SW activated');
-      });
-    `;
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    const swURL = URL.createObjectURL(blob);
-
-    // Daftarkan service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register(swURL)
-        .then(reg => console.log('Service Worker registered'))
-        .catch(err => console.error('SW registration failed:', err));
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker terdaftar!'))
+        .catch(err => console.error('Gagal register SW:', err));
     }
 
-    // Kirim notifikasi
     function kirimNotifikasi() {
       Notification.requestPermission().then(permission => {
         if (permission === "granted") {
           navigator.serviceWorker.getRegistration().then(reg => {
             if (reg) {
-              reg.showNotification("🔔 Notifikasi Berhasil!", {
-                body: "Ini notifikasi yang dikirim dari Service Worker.",
+              reg.showNotification("Notifikasi Terkirim 🎉", {
+                body: "Halo! Ini dari Service Worker.",
                 icon: "https://cdn-icons-png.flaticon.com/512/1827/1827392.png"
               });
+            } else {
+              alert("Service worker belum terdaftar.");
             }
           });
         } else {
-          alert("Kamu belum izinkan notifikasi.");
+          alert("Notifikasi ditolak.");
         }
       });
     }
